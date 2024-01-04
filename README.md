@@ -11,7 +11,7 @@ To achieve this, the input image is divided into smaller two-dimensional patches
 The number of patches, N, is determined by the dimensions of the original image and the size of each patch. It is calculated as N = (H × W) / (P × P), where H is the height of the image, W is the width of the image, and P represents the size of each patch. This equation gives us the total number of patches that will be extracted from the image.
 Once the image is divided into patches, each patch can be treated as an individual unit, similar to how words are treated in NLP. This allows for the application of techniques like recurrent neural networks (RNNs) or transformers, which are commonly used in NLP tasks, to process the image data in a sequential manner.
 
-## Preprocessing steps before feeding the image data to the Transformer model
+### **Preprocessing steps before feeding the image data to the Transformer model**
 
 ![ALT](./images/before_feeding_to_transformer.JPG)
 
@@ -23,7 +23,7 @@ Once the image is divided into patches, each patch can be treated as an individu
 
 **Augmenting Positional Embedding**: One-dimensional positional embedding, denoted as E_pos, is added to the patch embedding. This positional embedding encodes information about the spatial position of each patch in the image, allowing the model to understand the relative locations of different patches. The positional embedding is also learned during the training process.
 
-## Transformer Encoder Layer
+### **Transformer Encoder Layer**
 
 In the Vision Transformer (ViT) model, the encoder part of the original Transformer architecture is used. The input to the encoder is a sequence of embedded image patches, which includes a learnable class embedding added at the beginning of the sequence. This input sequence is also augmented with positional information to provide spatial context.
 The encoder processes the input sequence, attending to each patch and capturing the relationships between them. This allows the model to learn meaningful representations of the image content. The encoder consists of multiple layers of self-attention and feed-forward neural networks, which enable the model to effectively capture both local and global dependencies within the image.
@@ -78,36 +78,35 @@ Once we obtain the outputs from the MHSA block, these outputs are passed to skip
 
 ## Pytorch Implementation 
 
-### Changing Images into Tokens
-* **
-**Input**
+### **Changing Images into Tokens**
+
+* **Input**
 
 The function img_to_patch(x, patch_size, flatten_channels=True) takes an image tensor x, the size of each patch patch_size, and a boolean flatten_channels as input. The purpose of this function is to convert the image tensor into patches with a specified size and flatten the patches into vectors.
-* **
-**Extracting Dimensions**
+
+* **Extracting Dimensions**
 
 B, C, H, W = x.shape extracts the values of the batch dimension (B), number of channels (C), height (H), and width (W) from the shape of the input image tensor x.
-* **
-**Reshaping and Slicing into Patches**
+
+* **Reshaping and Slicing into Patches**
 
 x = x.reshape(B, C, H//patch_size, patch_size, W//patch_size, patch_size) reshapes the input tensor x to split it into patches. It uses reshape to rearrange the dimensions, where the height and width are divided by patch_size to determine the number of patches in each dimension. The resulting shape of x becomes [B, C, H//patch_size, patch_size, W//patch_size, patch_size]
-* **
-**Permuting**
+
+* **Permuting**
 
 x = x.permute(0, 2, 4, 1, 3, 5) permutes the dimensions of x to rearrange them in a desired order. This line is typically used to bring the batch dimension (0) and the channels dimension (1) to the desired positions. The resulting shape of x becomes [B, H', W', C, p_H, p_W], where H' and W' represent the dimensions of the patch grid.
-* **
-**Flattening Patches**
+
+* **Flattening Patches**
 
 x = x.flatten(1, 2) flattens the tensor x along dimensions 1 and 2. This operation collapses the dimensions corresponding to the patch grid (H' and W'), resulting in a tensor of shape [B, H'*W', C, p_H, p_W].
-* **
-**Flattening Channels**
+
+* **Flattening Channels**
 
 If the flatten_channels flag is True, the following line x = x.flatten(2, 4) flattens the tensor x along dimensions 2 and 4. This operation concatenates the channels (C) and the patch dimensions (p_H and p_W) into a single dimension. The resulting shape of x becomes [B, H'W', C p_H * p_W].
-* **
-**Return**
+
+* **Return**
 
 Finally, the function returns the tensor x, which represents the image divided into patches with the specified patch size. If flatten_channels is True, the patches are flattened into vectors.
-* ** 
 
 ```python
 
@@ -123,20 +122,19 @@ Finally, the function returns the tensor x, which represents the image divided i
   return x
 ```
 
-### Plotting the Patches
-* ** 
-**Generate Patches**
+### **Plotting the Patches**
+
+* **Generate Patches**
 
 The img_to_patch function is called to convert images from the CIFAR dataset into patches. The patch_size is set to 4, and flatten_channels is set to False, which means each patch will keep its 3-dimensional shape (channels, height, width) instead of being flattened into a 1D vector.
-* **
-**Prepare the Plot**
+
+* **Prepare the Plot**
 
 A matplotlib subplot is created with the number of rows equal to the first dimension of the CIFAR images tensor (which is likely the batch size or number of images) and one column. The figsize argument sets the width and height of the figure.
-* **
-**Loop Over Images**
+
+* **Loop Over Images**
 
 The script loops over each image in the batch (the range is based on the first dimension of the CIFAR images tensor).
-* **
 
 ```python
     NUM_IMAGES= 4
@@ -172,7 +170,7 @@ Here, the input is first normalized and then passed through the Multi-Head Atten
 
 ![Alt](./images/vit_architecture.png)
 
-### The Attention Block
+### **The Attention Block**
 ```python
 class AttentionBlock(nn.Module):
     def __init__(self, embed_dim, hidden_dim, num_heads, dropout  = 0.0):
@@ -195,7 +193,7 @@ class AttentionBlock(nn.Module):
 
         return x
 ```
-### CLS Token
+### **CLS Token**
 
 The concept of the class token in Vision Transformers (ViT) is borrowed from the BERT model in natural language processing (NLP). In NLP, BERT uses a special [CLS] token that is prepended to the input sequence. Similarly, in ViT, a similar approach is used where a class token is added to the sequence of image patch embedding.
 
@@ -233,7 +231,7 @@ The class token, which is a learnable parameter initialized in the model, is rep
 ```
 The class token is concatenated with the input sequence of patches, 'x'. By adding the class token at the beginning of the sequence, we include global information about the image in the input. This helps the model capture context and makes better predictions.
 
-### Positional Embedding
+### **Positional Embedding**
 
 In the vision transformer and other transformer based models, positional embedding is used to provide the model with information about the order or position of the input tokens because transformers by their nature do not have any inherent notion of sequence order.
 Positional Embedding is a vector added to the input embedding to encode the position of each token in the sequence. In the case of images, each patch is a token, and its position with in the original image is important for the model to understand the spatial relationships between patches.
@@ -254,7 +252,7 @@ After initialization, the shape of 'pos_embedding' is (1, 1+num_patches, embed_d
 ```
 The positional embedding is added to the token embeddings. Positional embedding encodes information about the position of each token in the sequence. The slicing [:,:T+1] ensures that the positional embedding align with the number of tokens in the sequence, including the class token. This step helps the model understand the spatial relationships between different patches in the image.
 
-### Applying Transformer
+### **Applying Transformer**
 
 ```python
     x = self.dropout(x)
@@ -271,7 +269,7 @@ x = self.transformer(x)
 ```
 The transformed input sequence, 'x', is passed through the transformer encoder. The transformer encoder consists of multiple layers, typically containing self-attention mechanisms. Self-attention allows each token in the sequence to interact with every other token, capturing dependencies and relationships between them. This interaction helps the model understand the context and relationships within the input sequence, enabling it to extract relevant features and make informed predictions.
 
-### Classification Prediction
+### **Classification Prediction**
 
 ```python
 cls = x[0]
@@ -283,7 +281,7 @@ out = self.mlp_head(cls)
 ```
 The isolated class token, denoted as cls, is then passed through a multilayer perceptron (MLP) head. An MLP is a type of neural network that consists of multiple layers of interconnected nodes (neurons). The MLP head processes the information contained in the class token and performs further transformations and computations to make the final classification prediction.
 
-### Output of ViT
+### **Output of ViT**
 The output of the transformer encoder is a sequence of embedding that corresponds to the input sequence. This sequence includes the CLS token followed by the embedding of the image patches. Each embedding in the sequence has been updated by the transformer encoder through its self-attention and feed-forward layers.
 
 If the input sequence to the transformer has a shape of (N, T+1, embed_dim), where N is the batch size, T+1 is the number of tokens (including the CLS token), and embed_dim is the embedding dimension, then the output will have the same shape.

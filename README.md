@@ -152,7 +152,9 @@ The script loops over each image in the batch (the range is based on the first d
     plt.show()
     plt.close()
 ```
+Output:
 
+![Alt](./images/plotting.jpg)
 
 Now that we have looked at the preprocessing, we can start building the Transformer model. We will be using the PyTorch module, nn.MultiheadAttention. Further, we use the Pre-Layer Normalization version of the Transformer blocks proposed by Ruibin Xiong in 2020. The idea is to apply Layer Normalization not in between residual blocks, but instead as a first layer in the residual blocks. This reorganization of the layers supports better gradient flow.
 

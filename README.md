@@ -11,7 +11,7 @@ To achieve this, the input image is divided into smaller two-dimensional patches
 The number of patches, N, is determined by the dimensions of the original image and the size of each patch. It is calculated as N = (H × W) / (P × P), where H is the height of the image, W is the width of the image, and P represents the size of each patch. This equation gives us the total number of patches that will be extracted from the image.
 Once the image is divided into patches, each patch can be treated as an individual unit, similar to how words are treated in NLP. This allows for the application of techniques like recurrent neural networks (RNNs) or transformers, which are commonly used in NLP tasks, to process the image data in a sequential manner.
 
-### Preprocessing steps applied to the image data before feeding it into a Transformer model
+## Preprocessing steps before feeding the image data to the Transformer model
 
 ![ALT](./images/before_feeding_to_transformer.JPG)
 

@@ -1,3 +1,5 @@
+*Authors: Bezawit Abebaw and Biruk Abere*
+
 ![Alt](./images/vit.gif)
 
 The Transformer architecture has revolutionized the use of attention, without relying on recurrence and convolutions as earlier attention models had previously done. Inspired by its success in NLP, researchers sought to apply the standard Transformer architecture to image; their target application at the time was image classification. Recall that the standard Transformer Model received a one-dimensional sequence of word embedding as input, since it was originally meant for NLP. In contrast, when applied to the task of image classification in computer vision, the input data to the Transformer model is provided in the form of two-dimensional images.
